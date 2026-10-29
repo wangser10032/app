@@ -120,7 +120,7 @@ export function RechargePage() {
   const amountCents = Math.round((Number(amount) || 0) * 100), enabledChannel = config.data?.channels?.find((c: any) => c.key === channel && c.enabled !== false);
   const channelName = (key: string) => key === 'alipay' ? '支付宝' : key === 'wechat' ? '微信支付' : key === 'manual' ? '人工充值' : '其他';
   return <div className="recharge-page">
-    <Heading title="余额充值" text="充值到账后，可用于购买和续费静态住宅 IP。"/>
+    <Heading title="余额充值"/>
     <div className="recharge-grid">
       <section className="panel recharge-form-panel"><form onSubmit={submit}>
         <div className="recharge-section-title"><h2>充值金额</h2><span>人民币 CNY</span></div>
@@ -136,7 +136,7 @@ export function RechargePage() {
         <div className="recharge-guidance"><h3>充值说明</h3><p>确认金额与支付方式后，进入收银台扫码付款。</p><p>支付结果会自动查询，到账后更新账户余额。</p><p>待支付的充值单可从下方记录继续支付。</p></div>
       </aside>
     </div>
-    <section className="panel recharge-history"><div className="panel-heading"><div><h2>充值记录</h2><p>查看历史充值与付款状态。</p></div><button className="button secondary small" disabled={history.loading} onClick={history.reload}><ArrowsClockwise size={15}/>刷新</button></div>
+    <section className="panel recharge-history"><div className="panel-heading"><h2>充值记录</h2><button className="button secondary small" disabled={history.loading} onClick={history.reload}><ArrowsClockwise size={15}/>刷新</button></div>
       {history.loading ? <Loading/> : history.error ? <ErrorState text={history.error} retry={history.reload}/> : !history.data?.items?.length ? <Empty title="暂无充值记录">选择金额和支付方式，完成第一笔充值。</Empty> : <div className="table-scroll"><table><thead><tr><th>充值单号</th><th>充值金额</th><th>支付方式</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead><tbody>{history.data.items.map((r: any) => <tr key={r.id}><td className="mono">{r.recharge_no}</td><td className="recharge-record-amount">{money(r.amount_cents)}</td><td>{channelName(r.channel)}</td><td><Badge status={r.status}/>{r.status === 'pending' && paymentCodeExpiry(r) <= now && <small className="muted">付款码已失效</small>}</td><td className="nowrap">{date(r.created_at)}</td><td>{r.status === 'pending' ? <button className="text-link" onClick={() => setParams({no: r.recharge_no})}>{paymentCodeExpiry(r) <= now ? '查看状态' : '继续支付'} <ArrowUpRight size={12}/></button> : <span className="muted">—</span>}</td></tr>)}</tbody></table></div>}
       {!!history.data?.total && <nav className="pagination recharge-pagination" aria-label="充值记录分页"><span>共 {history.data.total} 笔</span><button className="button secondary small" disabled={history.loading || historyPage <= 1} onClick={() => setHistoryPage(page => Math.max(1, page - 1))}>上一页</button><span>{historyPage} / {historyPages}</span><button className="button secondary small" disabled={history.loading || historyPage >= historyPages} onClick={() => setHistoryPage(page => Math.min(historyPages, page + 1))}>下一页</button></nav>}
     </section>
@@ -163,7 +163,7 @@ export function SettingsPage() {
     e.preventDefault(); if (password !== repeat) {toast('两次输入的新密码不一致。', true); return;} if (passwordIssue(password)) {toast(passwordIssue(password), true); return;}
     setBusy(true); try {await api('/auth/change-password', 'POST', {old_password: oldPassword, new_password: password}); toast('密码已修改，请使用新密码重新登录。'); logout();} catch (e) {toast(message(e), true);} finally {setBusy(false);}
   }
-  return <div className="settings-page"><Heading title="账号设置" text="管理账号资料与登录密码。"/><div className="settings-grid">
+  return <div className="settings-page"><Heading title="账号设置"/><div className="settings-grid">
     <section className="panel"><div className="settings-section-heading"><h2>账号资料</h2><p>邮箱是你的注册与登录凭据。</p></div><dl className="account-details"><div><dt>邮箱地址</dt><dd>{user?.email}</dd></div><div><dt>注册时间</dt><dd>{date(user?.created_at)}</dd></div><div><dt>账号角色</dt><dd>{user?.role === 'admin' ? '管理员' : '用户'}</dd></div></dl><NicknameForm/></section>
     <section className="panel" id="password"><div className="settings-section-heading"><h2>登录密码</h2><p>修改成功后，需要使用新密码重新登录。</p></div><form className="settings-password-form" onSubmit={submit}>
       <label>当前密码<input type="password" autoComplete="current-password" required placeholder="请输入当前密码" value={oldPassword} onChange={e => setOldPassword(e.target.value)}/></label>
