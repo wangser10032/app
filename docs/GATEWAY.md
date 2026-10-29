@@ -1,6 +1,6 @@
 # 静态住宅代理接入
 
-网关通过标准 HTTP Basic Proxy 认证支持普通 HTTP 请求与 HTTPS CONNECT 隧道。每个静态租约拥有独立用户名/密码，并永久绑定该租约分配的一个节点。
+网关在同一个端口同时提供 HTTP 代理（普通 HTTP 请求与 HTTPS CONNECT 隧道，HTTP Basic 认证）和 SOCKS5（用户名/密码认证，仅 CONNECT 命令），按连接首字节自动区分。每个静态租约拥有独立用户名/密码，并永久绑定该租约分配的一个节点。
 
 ## 接入
 
@@ -12,7 +12,13 @@ curl --proxy http://127.0.0.1:3128 \
   https://example.com
 ```
 
-上游可以是 HTTP 或 SOCKS5，网关客户端仍使用标准 HTTP 代理。HTTP/CONNECT 和上游认证都已在隔离测试环境中跑通。
+SOCKS5 客户端使用同一组租约用户名和密码：
+
+```bash
+curl --proxy socks5h://127.0.0.1:3128   --proxy-user 'sip_租约用户名:租约密码'   https://example.com
+```
+
+客户端协议与上游协议相互独立：上游可以是 HTTP 或 SOCKS5，用户都可以选择 HTTP、HTTPS 或 SOCKS5 接入。SOCKS5 失败时返回标准应答码：认证失败为子协商 `01`，私网目标为 `02`，无法解析为 `04`，不支持的命令（如 UDP ASSOCIATE）为 `07`。
 
 ## 固定出口与租期
 
