@@ -1,0 +1,32 @@
+{
+  "name": "resihub-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ResiHub 住宅代理售卖平台 - 后端 API / 支付 / 代理网关",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "backup": "node scripts/backup.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "overrides": {
+    "urllib": "4.9.1"
+  },
+  "dependencies": {
+    "alipay-sdk": "^4.5.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^12.2.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^10.2.1",
+    "wechatpay-node-v3": "^2.1.0",
+    "zod": "^4.6.7"
+  }
+}

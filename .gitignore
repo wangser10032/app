@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+!.env.production.example
+deploy/secrets/
+server/data/
+!server/data/.gitkeep
+*.log
+server/data/*.db
+server/data/*.db-*
+data/*.db
+.DS_Store
+.local/
+
+# 个人记录与开发截图不入库
+server/docs/input-log.md
+docs/screenshots/

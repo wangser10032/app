@@ -1,0 +1,29 @@
+# ResiHub 开发容器（Linux）
+# 与生产保持一致的基础运行时：Node 20 + Debian 12 + 原生模块构建链
+# 用途：在 Windows 上用 Linux 语义开发/联调，避免 better-sqlite3 等原生模块
+#      在 Windows 与 Linux 之间 ABI 不一致的问题。
+FROM node:20-bookworm
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai \
+    NODE_ENV=development \
+    NPM_CONFIG_FUND=false \
+    NPM_CONFIG_AUDIT=false \
+    NPM_CONFIG_UPDATE_NOTIFIER=false
+
+# 常用开发/排障工具；构建链（python3/make/g++）基础镜像已自带
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      ca-certificates curl jq less vim-tiny \
+      sqlite3 tzdata procps iproute2 netcat-openbsd \
+      openssl dnsutils \
+ && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+ && echo "$TZ" > /etc/timezone \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# 8080 API / 3128 代理网关 / 5173 用户前台 / 5174 管理后台
+EXPOSE 8080 3128 5173 5174
+
+CMD ["sleep", "infinity"]

@@ -1,0 +1,54 @@
+# ResiHub 开发环境编排（Windows / Docker Desktop）
+#
+#   docker compose -f deploy/docker-compose.dev.yml up -d --build
+#   docker compose -f deploy/docker-compose.dev.yml exec dev bash
+#
+# 代码目录通过 bind mount 进入容器；node_modules 使用 Linux 命名卷，
+# 避免宿主机 Windows 版原生模块覆盖容器内的 Linux 版本。
+name: resihub
+
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.dev
+    image: resihub-dev:node20
+    container_name: resihub-dev
+    working_dir: /workspace
+    init: true
+    tty: true
+    stdin_open: true
+    command: ["sh", "/workspace/deploy/run-dev.sh"]
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      NODE_ENV: development
+      # Windows bind mount 不产生 inotify 事件，Vite/文件监听需要轮询
+      CHOKIDAR_USEPOLLING: "1"
+      DOCKER_HOST_ALIAS: host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "127.0.0.1:${API_PORT:-8080}:8080"       # 前台 / API / 后台
+      - "127.0.0.1:${GATEWAY_PORT:-3128}:3128"   # HTTP 代理网关
+      - "127.0.0.1:${WEB_PORT:-5173}:5173"       # 可选 Vite 开发预览
+      - "127.0.0.1:${ADMIN_PORT:-5174}:5174"     # 可选 Vite 开发预览
+    volumes:
+      - ..:/workspace
+      - server_node_modules:/workspace/server/node_modules
+      - web_node_modules:/workspace/web/node_modules
+      - admin_node_modules:/workspace/admin/node_modules
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 180s
+
+volumes:
+  server_node_modules:
+    name: resihub_server_node_modules
+  web_node_modules:
+    name: resihub_web_node_modules
+  admin_node_modules:
+    name: resihub_admin_node_modules

@@ -1,0 +1,95 @@
+/* Account pages inherit the platform palette and component tokens. */
+.auth-page.account-auth{padding:40px 24px;background:var(--canvas,#f5f6f8)}
+.account-auth .auth-main{width:430px;max-width:100%}
+.account-auth .auth-form{padding:30px 34px;border-radius:8px;box-shadow:0 5px 22px #172b4410}
+.account-auth .auth-brand-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:23px;margin-bottom:27px;border-bottom:1px solid var(--line)}
+.account-auth .auth-brand-row .brand{margin:0}
+.account-auth .auth-brand-row>span{font-size:12px;color:var(--muted);white-space:nowrap}
+.account-auth .auth-intro h1{font-size:23px;letter-spacing:-.4px;font-weight:650;margin:0 0 8px}
+.account-auth .auth-intro p{font-size:12px;line-height:1.8;color:var(--muted);margin-bottom:25px}
+.account-auth .auth-tabs{gap:23px;border-bottom:1px solid var(--line);margin:0 0 25px}
+.account-auth .auth-tabs button{padding:0 0 12px;font-size:13px;margin-bottom:-1px}
+.account-auth .auth-tabs button.active{font-weight:600}
+.account-auth .auth-form label{font-size:13px;margin-bottom:18px}
+.account-auth .auth-form input:not([type="checkbox"]){min-height:42px;font-size:13px}
+.account-auth .auth-form label small{font-size:12px;line-height:1.6}
+.account-auth .code-field .button{min-height:42px;height:42px;padding:8px 12px}
+.account-auth .auth-form .checkbox{margin:0;font-size:12px}
+.account-auth .form-between{margin:20px 0 22px}
+.account-auth .form-between>a{color:var(--accent)}
+.account-auth .auth-submit{min-height:42px;justify-content:space-between;padding:10px 15px}
+.account-auth .auth-switch{margin-top:23px;padding-top:21px;border-top:1px solid var(--line)}
+.account-auth .auth-switch a{color:var(--accent);font-weight:500}
+.account-auth .auth-home-link{font-size:12px;display:flex;gap:5px;align-items:center;justify-content:center;color:var(--muted);padding:19px}
+.account-auth .auth-home-link:hover{color:var(--accent)}
+.account-auth .auth-dev-code{display:block;line-height:1.8}
+.account-auth .auth-dev-code strong{letter-spacing:1px}
+.recharge-page .recharge-grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;max-width:1100px;align-items:start}
+.recharge-page .recharge-grid>.panel{margin:0;padding:24px}
+.recharge-page .recharge-section-title{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:17px}
+.recharge-page .recharge-section-title h2{font-size:14px;margin:0}
+.recharge-page .recharge-section-title>span{font-size:12px;color:var(--muted)}
+.recharge-page .amount-grid{gap:10px;margin-bottom:19px}
+.recharge-page .amount-grid button{position:relative;display:flex;align-items:baseline;justify-content:center;gap:4px;padding:15px 22px;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.recharge-page .amount-grid button>span{font-size:12px;font-weight:400}
+.recharge-page .amount-grid button>svg{position:absolute;right:7px;top:7px}
+.recharge-page .amount-grid button.selected,.recharge-page .payment-channels button.selected{color:var(--accent);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,white)}
+.recharge-page .amount-grid button:hover:not(:disabled),.recharge-page .payment-channels button:hover:not(:disabled){border-color:var(--accent)}
+.recharge-page .recharge-custom-amount{font-size:13px;margin-bottom:23px}
+.recharge-page .recharge-custom-amount .input-icon{max-width:300px}
+.recharge-page .recharge-custom-amount input{min-height:40px;font-variant-numeric:tabular-nums}
+.recharge-page .recharge-custom-amount small{font-size:12px}
+.recharge-page .recharge-channel-title{padding-top:21px;border-top:1px solid var(--line);margin-bottom:15px}
+.recharge-page .payment-channels{gap:12px;margin:0 0 23px}
+.recharge-page .payment-channels button{padding:13px 14px;min-height:54px;text-align:left}
+.recharge-page .payment-channels button>strong{font-size:13px;font-weight:500;flex:1}
+.recharge-page .payment-channels button>strong small{display:block;font-size:12px;margin-top:4px;font-weight:400}
+.recharge-page .payment-channels .channel-logo{font-size:15px;line-height:22px;min-width:28px;text-align:center}
+.recharge-page .recharge-submit-row{display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding-top:20px}
+.recharge-page .recharge-total{display:flex;align-items:baseline;gap:12px;padding:0}
+.recharge-page .recharge-total>span{color:var(--muted);font-size:12px}
+.recharge-page .recharge-total>strong{font-size:23px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.recharge-page .recharge-submit-row>.button{min-width:144px;min-height:39px}
+.recharge-page .recharge-balance-label{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.recharge-page .recharge-balance-value{display:block;font-size:28px;font-weight:600;letter-spacing:-.6px;font-variant-numeric:tabular-nums;margin:14px 0 13px}
+.recharge-page .recharge-account-panel>.text-link{color:var(--accent);font-size:12px}
+.recharge-page .recharge-guidance{border-top:1px solid var(--line);padding-top:20px;margin-top:25px}
+.recharge-page .recharge-guidance h3{font-size:13px;margin-bottom:13px}
+.recharge-page .recharge-guidance p{font-size:12px;line-height:1.85;color:var(--muted);margin-top:10px}
+.recharge-page .recharge-history{margin-top:22px;max-width:1100px}
+.recharge-page .recharge-history .panel-heading{padding:18px 22px}
+.recharge-page .recharge-history h2{font-size:14px}
+.recharge-page .recharge-history th,.recharge-page .recharge-history td{padding:15px 21px}
+.recharge-page .recharge-record-amount{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.recharge-page .recharge-form-panel .state,.recharge-page .recharge-history .state{min-height:140px;padding:30px 20px}
+.recharge-cashier{gap:13px}
+.recharge-cashier .cashier-amount{font-size:30px;font-variant-numeric:tabular-nums}
+.recharge-cashier .qr-image{width:220px;height:220px;border:1px solid var(--line);padding:7px;border-radius:6px}
+.recharge-cashier .cashier-wait{font-size:12px;line-height:1.6}
+.recharge-cashier .recharge-payment-reference{border-top:1px solid var(--line);width:100%;padding-top:17px;margin-top:8px;display:flex;gap:12px;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.recharge-cashier .cashier-no{font-size:12px;color:inherit;overflow-wrap:anywhere}
+.recharge-cashier .state{min-height:220px;padding:20px}
+.recharge-cashier .recharge-code-expired{padding:17px 10px 7px;max-width:390px}
+.recharge-cashier .recharge-code-expired>svg{color:var(--muted);margin-bottom:12px}
+.recharge-cashier .recharge-code-expired h3{font-size:15px;margin-bottom:10px}
+.recharge-cashier .recharge-code-expired p{font-size:12px;line-height:1.9}
+.recharge-cashier .recharge-code-expired>div{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.recharge-page .recharge-pagination{font-size:12px;padding:15px 21px}
+.settings-page .settings-grid{grid-template-columns:1fr 1fr;gap:20px;max-width:1100px;align-items:start}
+.settings-page .settings-grid>.panel{padding:24px}
+.settings-page .settings-section-heading{padding-bottom:19px;border-bottom:1px solid var(--line);margin-bottom:21px}
+.settings-page .settings-section-heading h2{font-size:15px;margin-bottom:7px}
+.settings-page .settings-section-heading p{font-size:12px;line-height:1.7;color:var(--muted);margin:0}
+.settings-page .account-details{margin:0 0 24px}
+.settings-page .account-details>div{padding:12px 0;align-items:baseline}
+.settings-page .account-details>div:first-child{padding-top:0}
+.settings-page .account-details dt{flex-shrink:0;font-size:12px}
+.settings-page .account-details dd{font-size:13px;text-align:right;overflow-wrap:anywhere}
+.settings-page .account-nickname-form label,.settings-page .settings-password-form label{font-size:13px;margin-bottom:17px}
+.settings-page .account-nickname-form input,.settings-page .settings-password-form input{min-height:40px;font-size:13px}
+.settings-page .account-nickname-form>.button{min-height:36px;font-size:12px}
+.settings-page .settings-form-actions{padding-top:3px}
+.settings-page .settings-form-actions>.button{min-height:38px}
+@media(max-width:1100px){.recharge-page .recharge-grid{grid-template-columns:minmax(0,1fr) 260px}}
+@media(max-width:900px){.recharge-page .recharge-grid{grid-template-columns:1fr}.recharge-page .recharge-account-panel{display:grid;grid-template-columns:1fr auto;gap:0 20px}.recharge-page .recharge-balance-label{grid-column:1}.recharge-page .recharge-balance-value{grid-column:1;margin:10px 0 0;font-size:24px}.recharge-page .recharge-account-panel>.text-link{grid-column:2;grid-row:1 / span 2;align-self:center}.recharge-page .recharge-guidance{display:none}.settings-page .settings-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.auth-page.account-auth{padding:24px 16px}.account-auth .auth-form{padding:26px 24px}.account-auth .auth-brand-row{gap:12px}.account-auth .auth-brand-row>span{font-size:12px}.recharge-page .recharge-grid>.panel{padding:19px}.recharge-page .amount-grid{gap:8px}.recharge-page .amount-grid button{font-size:17px;padding:15px}.recharge-page .payment-channels{gap:8px}.recharge-page .payment-channels button{padding:12px 10px;gap:7px}.recharge-page .recharge-submit-row{gap:12px}.recharge-page .recharge-total{display:block}.recharge-page .recharge-total>span{display:block;margin-bottom:5px}.recharge-page .recharge-total>strong{font-size:22px}.recharge-page .recharge-submit-row>.button{min-width:130px}.recharge-page .recharge-history .panel-heading{padding:17px 18px}.settings-page .settings-grid>.panel{padding:20px}.recharge-cashier .recharge-payment-reference{align-items:flex-start;flex-direction:column;gap:7px}}

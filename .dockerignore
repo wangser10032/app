@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+.git
+dist
+**/dist
+server/data/*.db
+server/data/*.db-*
+data/*.db
+*.log
+**/.env
+**/.env.*
+!**/.env.example
+deploy/secrets
+server/data
+.local
+docs/screenshots
