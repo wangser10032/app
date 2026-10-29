@@ -8,7 +8,7 @@ export function Badge({ value }: { value: string }) { return <span className={`b
 export function Spinner() { return <span className="loading"><LoaderCircle className="spin" size={18} />正在加载…</span>; }
 export function Empty({ text = '暂无记录', hint = '当前条件下没有记录，可调整筛选条件后重试。' }: { text?: string; hint?: string }) { return <div className="empty"><Database size={23} strokeWidth={1.5} /><strong>{text}</strong><span>{hint}</span></div>; }
 export function Field({ title, children, hint }: { title: string; children: ReactNode; hint?: string }) { return <label className="field"><span>{title}</span>{children}{hint && <small>{hint}</small>}</label>; }
-export function PageHeader({ title, description, children }: { title: string; description: string; children?: ReactNode }) { return <div className="page-header"><div><h1>{title}</h1><p>{description}</p></div><div className="header-actions">{children}</div></div>; }
+export function PageHeader({ title, description, children }: { title: string; description?: string; children?: ReactNode }) { return <div className="page-header"><div><h1>{title}</h1>{description && <p>{description}</p>}</div><div className="header-actions">{children}</div></div>; }
 export function ErrorBox({ error, retry }: { error: string; retry?: () => void }) { return <div className="error" role="alert"><span>{error}</span>{retry && <button className="text-button" onClick={retry}>重新加载</button>}</div>; }
 export function Modal({ title, children, onClose, onSubmit, busy, submitLabel = '保存' }: { title: string; children: ReactNode; onClose: () => void; onSubmit?: (e: FormEvent) => void; busy?: boolean; submitLabel?: string }) {
   const ref = useRef<HTMLDialogElement>(null);

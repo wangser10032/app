@@ -6,6 +6,9 @@ import { api, Row, send, TOKEN_KEY } from './api';
 import { Auth, ErrorBox, Notify, Spinner } from './ui';
 import { IPsPage, RechargesPage, UsersPage } from './operations';
 import { AccountPage, Dashboard, LeasesPage, OrdersPage, ProductsPage, SettingsPage } from './static-pages';
+import '@fontsource/noto-sans-sc/400.css';
+import '@fontsource/noto-sans-sc/500.css';
+import '@fontsource/noto-sans-sc/700.css';
 import './styles.css';
 import './commercial.css';
 
