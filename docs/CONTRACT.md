@@ -299,10 +299,11 @@ if (fs.existsSync(path.join(__dirname, 'gateway/start.js'))) {
 
 | 方法 | 路径 | 请求体 | 响应 |
 |---|---|---|---|
-| POST | /api/auth/register | `{email, password, nickname?, code?}` | 201 `{token, user}`；`REGISTER_REQUIRE_CODE=true` 时缺 code → `CODE_INVALID`；赠送流量自动生效 |
-| POST | /api/auth/login | `{email, password, remember?}` | `{token, user}`；失败 `UNAUTHORIZED` |
+| GET | /api/auth/captcha?purpose=register\|login\|reset | 无 | `{id,image,expires_at}`；PNG 图形验证码，有效期 5 分钟，响应不含答案 |
+| POST | /api/auth/register | `{email, password, nickname?, code?, captcha?}` | 201 `{token, user}`；默认验证受人机验证保护的邮箱 code；关闭邮箱验证且未传 code 时仍须 captcha |
+| POST | /api/auth/login | `{email, password, remember?, captcha:{id,answer}}` | `{token, user}`；图形验证失败为 400，账号或密码失败为 `UNAUTHORIZED` |
 | POST | /api/auth/login-code | `{email, code, remember?}` | `{token, user}` |
-| POST | /api/auth/send-code | `{email, purpose: register\|login\|reset}` | `{ok, dev_code?}`（dev_code 仅 MAIL_MODE=mock 时返回） |
+| POST | /api/auth/send-code | `{email, purpose: register\|login\|reset, captcha:{id,answer}}` | `{ok, dev_code?}`（dev_code 仅 MAIL_MODE=mock 时返回）；图形验证在发送前消费 |
 | POST | /api/auth/reset-password | `{email, code, password}` | `{ok}` |
 | GET | /api/auth/me | — | `{user}` |
 | POST | /api/auth/change-password | `{old_password, new_password}` | `{ok}` |

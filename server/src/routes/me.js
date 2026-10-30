@@ -8,7 +8,7 @@ const { paginate, paged } = require('../utils');
 const { getSettings } = require('../services/settings');
 const recharge = require('../services/recharge');
 const rentals = require('../services/static-rentals');
-const { createPayment } = require('../services/payments');
+const { createPayment, channels } = require('../services/payments');
 const router = express.Router();
 router.use(authRequired);
 const rechargeFields = 'id,recharge_no,user_id,amount_cents,channel,status,pay_url,qr_content,paid_at,created_at';
@@ -52,6 +52,10 @@ router.all(['/entitlements', '/usage', '/keys', '/keys/:id', '/coverage'], (req,
 router.get('/recharges', (req, res) => res.json(list(req, 'recharges', rechargeFields, 'status')));
 router.post('/recharges', route(async (req, res) => {
   const body = z.object({ amount_cents: z.number().int().min(1000).max(1000000), channel: z.enum(['alipay', 'wechat']) }).parse(req.body);
+  // 渠道关闭或未配置时直接拒绝，不留下失败的充值单
+  const target = channels().find(c => c.key === body.channel);
+  if (!target.switched_on) fail(409, 'PAYMENT_UNAVAILABLE', '该支付方式暂不支持，请选择其他方式');
+  if (!target.enabled) fail(503, 'PAYMENT_UNAVAILABLE', '该支付渠道尚未配置，请联系管理员');
   const row = recharge.createRecharge(req.user.id, body.amount_cents, body.channel);
   try {
     const payment = await createPayment({ rechargeNo: row.recharge_no, amountCents: row.amount_cents, channel: row.channel, subject: 'ResiHub 账户充值' });

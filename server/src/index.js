@@ -22,6 +22,7 @@ app.get('/api/health', (req, res) => { db.prepare('SELECT 1').get(); res.json({ 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/packages', require('./routes/packages'));
 app.use('/api/static-products', require('./routes/static-products'));
+app.use('/api/docs', require('./routes/docs'));
 app.use('/api/ip', require('./routes/ip'));
 app.use('/api/me', require('./routes/me'));
 app.use('/api/admin', require('./routes/admin'));

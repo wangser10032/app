@@ -8,9 +8,18 @@ const { route, fail } = require('../utils/errors');
 const { z, email, password } = require('../utils/validation');
 const { signToken, authRequired, publicUser } = require('../middleware/auth');
 const { consumeCode, sendCode } = require('../services/mail');
+const { createCaptcha, consumeCaptcha } = require('../services/captcha');
 const router = express.Router();
 const limit = rateLimit({ windowMs: 15 * 60000, limit: 60, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: { code: 'RATE_LIMITED', message: '操作过于频繁，请稍后再试' } } });
 router.use(limit);
+const purpose = z.enum(['register', 'login', 'reset']);
+const captcha = z.object({ id: z.string().uuid(), answer: z.string().trim().min(1).max(12) }).optional();
+const captchaLimit = rateLimit({ windowMs: 60000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: { code: 'RATE_LIMITED', message: '刷新过于频繁，请稍后再试' } } });
+router.get('/captcha', captchaLimit, route((req, res) => {
+  const value = purpose.parse(req.query.purpose);
+  res.setHeader('Cache-Control', 'no-store');
+  res.json(createCaptcha(value, req.ip));
+}));
 const account = address => db.prepare('SELECT * FROM users WHERE email=?').get(address);
 function loggedIn(res, user, remember, status = 200) {
   if (user.status !== 'active') fail(401, 'UNAUTHORIZED', '账号已停用');
@@ -19,16 +28,20 @@ function loggedIn(res, user, remember, status = 200) {
   res.status(status).json({ token: signToken(fresh, remember), user: publicUser(fresh) });
 }
 router.post('/send-code', route(async (req, res) => {
-  const body = z.object({ email, purpose: z.enum(['register', 'login', 'reset']) }).parse(req.body);
+  const body = z.object({ email, purpose, captcha }).parse(req.body);
+  consumeCaptcha(body.captcha, body.purpose, req.ip);
   const user = account(body.email);
   if (body.purpose === 'register' && user) fail(409, 'EMAIL_EXISTS', '此邮箱已注册');
   if (body.purpose !== 'register' && (!user || user.status !== 'active')) return res.json({ ok: true });
   res.json(await sendCode(body.email, body.purpose));
 }));
 router.post('/register', route(async (req, res) => {
-  const body = z.object({ email, password, nickname: z.string().trim().max(60).default(''), code: z.string().max(6).optional() }).parse(req.body);
+  const body = z.object({ email, password, nickname: z.string().trim().max(60).default(''), code: z.string().max(6).optional(), captcha }).parse(req.body);
   if (account(body.email)) fail(409, 'EMAIL_EXISTS', '此邮箱已注册');
-  if (config.registerRequireCode) consumeCode(body.email, 'register', body.code || '');
+  // Email codes are issued only after a human challenge. Keep non-email local
+  // registration protected too, even when an operator disables email checks.
+  if (config.registerRequireCode || body.code) consumeCode(body.email, 'register', body.code || '');
+  else consumeCaptcha(body.captcha, 'register', req.ip);
   const hash = await bcrypt.hash(body.password, 12);
   const user = db.transaction(() => {
     if (account(body.email)) fail(409, 'EMAIL_EXISTS', '此邮箱已注册');
@@ -39,7 +52,8 @@ router.post('/register', route(async (req, res) => {
   loggedIn(res, user, false, 201);
 }));
 router.post('/login', route(async (req, res) => {
-  const body = z.object({ email, password: z.string().min(1).max(200), remember: z.boolean().optional() }).parse(req.body);
+  const body = z.object({ email, password: z.string().min(1).max(200), remember: z.boolean().optional(), captcha }).parse(req.body);
+  consumeCaptcha(body.captcha, 'login', req.ip);
   const user = account(body.email);
   // A fixed bcrypt comparison also gives unknown accounts a password-work cost.
   const good = await bcrypt.compare(body.password, user?.password_hash || '$2a$12$Gq0S0XJDt2znPlK1R./oEepRLeUQXR0U8u0P.VOzaq2vVeQwuMace');

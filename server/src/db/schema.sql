@@ -20,6 +20,15 @@ CREATE TABLE IF NOT EXISTS email_codes (
   created_at INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS human_challenges (
+  id TEXT PRIMARY KEY,
+  purpose TEXT NOT NULL,
+  answer_hash TEXT NOT NULL,
+  requester_hash TEXT NOT NULL,
+  expires_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_human_challenge_expiry ON human_challenges(expires_at);
+
 CREATE TABLE IF NOT EXISTS packages (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,

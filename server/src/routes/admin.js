@@ -8,7 +8,9 @@ const { z, password, country, countryValue, status } = require('../utils/validat
 const { authRequired, adminRequired, fields } = require('../middleware/auth');
 const { paginate, paged } = require('../utils');
 const rentals = require('../services/static-rentals');
-const { getSettings, setSettings } = require('../services/settings');
+const { getSettings, setSettings, DEFAULT_DOCS } = require('../services/settings');
+const { channels } = require('../services/payments');
+const config = require('../config');
 const { getStats } = require('../services/stats');
 const { addLedger } = require('../services/ledger');
 const recharge = require('../services/recharge');
@@ -197,10 +199,14 @@ router.delete('/ips/:id', route((req, res) => {
   }).immediate();
   res.status(204).end();
 }));
-router.get('/settings', (req, res) => res.json({ settings: getSettings() }));
+const adminSettings = () => { const s = getSettings(); return { site_name: s.site_name || '', announcement: s.announcement || '', pay_alipay_enabled: s.pay_alipay_enabled !== '0', pay_wechat_enabled: s.pay_wechat_enabled !== '0', docs_markdown: s.docs_markdown || DEFAULT_DOCS, docs_default: DEFAULT_DOCS, gateway: `${config.publicGatewayHost}:${config.publicGatewayPort || config.gatewayPort}`, channels: channels().map(({ key, name, configured }) => ({ key, name, configured })) }; };
+router.get('/settings', (req, res) => res.json({ settings: adminSettings() }));
 router.put('/settings', route((req, res) => {
-  const body = z.object({ site_name: z.string().trim().min(1).max(60).optional(), announcement: z.string().max(2000).optional() }).strict().parse(req.body);
-  const settings = db.transaction(() => { const settings = setSettings(body); audit(req, 'settings.update', '', { fields: Object.keys(body) }); return settings; })();
-  res.json({ settings });
+  const body = z.object({ site_name: z.string().trim().min(1).max(60).optional(), announcement: z.string().max(2000).optional(), pay_alipay_enabled: z.boolean().optional(), pay_wechat_enabled: z.boolean().optional(), docs_markdown: z.string().max(50000, '接入说明最多 50000 字').optional() }).strict().parse(req.body);
+  const data = Object.fromEntries(Object.entries(body).map(([key, value]) => [key, typeof value === 'boolean' ? (value ? '1' : '0') : value]));
+  // 与默认模板相同则存空值，之后模板更新仍然生效
+  if (typeof data.docs_markdown === 'string' && data.docs_markdown.trim() === DEFAULT_DOCS.trim()) data.docs_markdown = '';
+  db.transaction(() => { setSettings(data); audit(req, 'settings.update', '', { fields: Object.keys(body) }); })();
+  res.json({ settings: adminSettings() });
 }));
 module.exports = router;

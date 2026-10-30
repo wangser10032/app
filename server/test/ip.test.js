@@ -18,3 +18,14 @@ test('visitor IP endpoint reports local addresses without external lookups', asy
   assert.deepEqual(await res.json(), { ip: '127.0.0.1', local: true }, 'X-Forwarded-For is ignored without TRUST_PROXY');
   assert.equal(external, 0);
 });
+
+test('mainland IPs resolve offline with Chinese names and carrier', async t => {
+  const realFetch = global.fetch; global.fetch = () => { throw new Error('mainland lookups must not call external services'); };
+  t.after(() => { global.fetch = realFetch; });
+  const { lookup } = require('../src/services/ip-lookup');
+  const changsha = await lookup('113.246.0.1');
+  assert.deepEqual([changsha.country, changsha.region, changsha.city, changsha.isp], ['CN', '湖南省', '长沙市', '中国电信']);
+  assert.ok(Math.abs(changsha.lat - 28.23) < .01 && Math.abs(changsha.lon - 112.94) < .01);
+  const beijing = await lookup('220.181.38.148');
+  assert.deepEqual([beijing.country, beijing.region, beijing.city], ['CN', '', '北京市'], 'province and city collapse when they name the same place');
+});

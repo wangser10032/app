@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
+const crypto = require('node:crypto');
 
 test('static residential purchase, renewal, inventory, account and payment workflow', async t => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'resihub-static-integration-'));
@@ -13,6 +14,13 @@ test('static residential purchase, renewal, inventory, account and payment workf
   const base = `http://127.0.0.1:${server.address().port}`;
   t.after(async () => { await new Promise(resolve => server.close(resolve)); db.close(); fs.rmSync(dir, { recursive: true, force: true }); });
   async function api(method, route, body, token, expected = 200, headers = {}) {
+    if (method === 'POST' && ['/api/auth/send-code', '/api/auth/login'].includes(route) && !body.captcha) {
+      const random = t.mock.method(crypto, 'randomInt', (min, max) => max === undefined ? 0 : min);
+      let challenge;
+      try { challenge = await api('GET', `/api/auth/captcha?purpose=${route.endsWith('send-code') ? body.purpose : 'login'}`); }
+      finally { random.mock.restore(); }
+      body = { ...body, captcha: { id: challenge.id, answer: '22222' } };
+    }
     const r = await fetch(base + route, { method, headers: { ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}), ...headers }, body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(10000) });
     const text = await r.text(); let data; try { data = text ? JSON.parse(text) : null; } catch { data = text; }
