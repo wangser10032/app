@@ -25,7 +25,13 @@ function greatArc(a: LonLat, b: LonLat, samples = 48) {
   });
 }
 
-export function Globe({countries = [], visitor, className = ''}: {countries?: string[]; visitor?: LonLat | null; className?: string}) {
+type Palette = {atmo: [string, string, string]; body: [string, string, string]; rim: string; dot: string; dotBase: number; glow: string; arc: [string, string]; visitorArc: [string, string]; exit: string; visitor: string; hub: string; ring: string; packet: string};
+const PALETTES: Record<'dark' | 'light', Palette> = {
+  dark: {atmo: ['rgba(76,124,255,.38)', 'rgba(76,124,255,.12)', 'rgba(76,124,255,0)'], body: ['#1b3560', '#0d1d36', '#0a1730'], rim: 'rgba(140,175,255,.35)', dot: '122,160,255', dotBase: .18, glow: 'rgba(125,157,255,.9)', arc: ['rgba(125,157,255,.95)', 'rgba(242,169,59,.95)'], visitorArc: ['rgba(94,224,200,.9)', 'rgba(125,157,255,.9)'], exit: 'rgba(242,169,59,1)', visitor: 'rgba(94,224,200,1)', hub: 'rgba(255,255,255,1)', ring: '255,255,255', packet: '#fff'},
+  light: {atmo: ['rgba(79,125,247,.26)', 'rgba(79,125,247,.08)', 'rgba(79,125,247,0)'], body: ['#ffffff', '#eef3ff', '#d6e2ff'], rim: 'rgba(36,84,214,.22)', dot: '36,84,214', dotBase: .16, glow: 'rgba(79,125,247,.55)', arc: ['rgba(36,84,214,.95)', 'rgba(240,138,36,.95)'], visitorArc: ['rgba(16,185,129,.9)', 'rgba(36,84,214,.9)'], exit: 'rgba(240,138,36,1)', visitor: 'rgba(16,185,129,1)', hub: 'rgba(20,41,94,1)', ring: '20,41,94', packet: '#2454d6'},
+};
+
+export function Globe({countries = [], visitor, className = '', theme = 'dark'}: {countries?: string[]; visitor?: LonLat | null; className?: string; theme?: 'dark' | 'light'}) {
   const canvas = useRef<HTMLCanvasElement>(null), reduced = usePrefersReducedMotion();
   const dots = useMemo(landDots, []);
   const exits = useMemo(() => {
@@ -37,8 +43,12 @@ export function Globe({countries = [], visitor, className = ''}: {countries?: st
   const view = useRef({lon: 98, lat: 22, drag: null as null | {x: number; y: number; lon: number; lat: number}, idleAt: 0});
 
   useEffect(() => {
-    const el = canvas.current!, ctx = el.getContext('2d')!;
-    let raf = 0, visible = true, start = performance.now(), last = start, w = 0, h = 0, dpr = 1;
+    const P = PALETTES[theme];
+    const el = canvas.current!;
+    const context = el.getContext('2d');
+    if (!context) return;
+    const ctx: CanvasRenderingContext2D = context;
+    let raf = 0, inView = true, start = performance.now(), last = start, w = 0, h = 0, dpr = 1;
     const resize = () => { dpr = Math.min(2, window.devicePixelRatio || 1); w = el.clientWidth; h = el.clientHeight; el.width = w * dpr; el.height = h * dpr; draw(performance.now()); };
     function project([lon, lat]: LonLat, height = 1) {
       const v = view.current, l = lon * RAD, p = lat * RAD, l0 = v.lon * RAD, p0 = v.lat * RAD;
@@ -51,17 +61,17 @@ export function Globe({countries = [], visitor, className = ''}: {countries?: st
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
       // 大气层与球体
       const atmo = ctx.createRadialGradient(cx, cy, R * .92, cx, cy, R * 1.32);
-      atmo.addColorStop(0, 'rgba(76,124,255,.38)'); atmo.addColorStop(.35, 'rgba(76,124,255,.12)'); atmo.addColorStop(1, 'rgba(76,124,255,0)');
+      atmo.addColorStop(0, P.atmo[0]); atmo.addColorStop(.35, P.atmo[1]); atmo.addColorStop(1, P.atmo[2]);
       ctx.fillStyle = atmo; ctx.beginPath(); ctx.arc(cx, cy, R * 1.32, 0, Math.PI * 2); ctx.fill();
       const body = ctx.createRadialGradient(cx - R * .35, cy - R * .4, R * .1, cx, cy, R);
-      body.addColorStop(0, '#1b3560'); body.addColorStop(.7, '#0d1d36'); body.addColorStop(1, '#0a1730');
+      body.addColorStop(0, P.body[0]); body.addColorStop(.7, P.body[1]); body.addColorStop(1, P.body[2]);
       ctx.fillStyle = body; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = 'rgba(140,175,255,.35)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = P.rim; ctx.lineWidth = 1; ctx.stroke();
       // 陆地点阵：按深度分 4 档批量绘制
       const buckets: number[][] = [[], [], [], []];
       for (const d of dots) { const q = project(d); if (q.z <= 0) continue; const b = Math.min(3, Math.floor(q.z * 4)); buckets[b].push(cx + q.x * R, cy - q.y * R); }
       buckets.forEach((pts, b) => {
-        ctx.fillStyle = `rgba(122,160,255,${.18 + b * .2})`; const size = (.75 + b * .2) * Math.max(1, R / 260);
+        ctx.fillStyle = `rgba(${P.dot},${P.dotBase + b * .2})`; const size = (.75 + b * .2) * Math.max(1, R / 260);
         ctx.beginPath(); for (let i = 0; i < pts.length; i += 2) { ctx.moveTo(pts[i] + size, pts[i + 1]); ctx.arc(pts[i], pts[i + 1], size, 0, Math.PI * 2); } ctx.fill();
       });
       // 航线
@@ -73,37 +83,37 @@ export function Globe({countries = [], visitor, className = ''}: {countries?: st
         for (let i = 0; i <= n; i++) { const q = project(path[i].p, path[i].h); if (q.hidden) { pen = false; continue; } const X = cx + q.x * R, Y = cy - q.y * R; if (pen) ctx.lineTo(X, Y); else { ctx.moveTo(X, Y); pen = true; } }
         ctx.stroke();
       };
-      ctx.save(); ctx.shadowColor = 'rgba(125,157,255,.9)'; ctx.shadowBlur = 10;
-      arcs.forEach((path, i) => strokeArc(path, Math.min(1, Math.max(0, intro * 1.6 - i * .08)), ['rgba(125,157,255,.95)', 'rgba(242,169,59,.95)'], 1.5));
-      if (visitorArc) strokeArc(visitorArc, intro, ['rgba(94,224,200,.9)', 'rgba(125,157,255,.9)'], 1.2);
+      ctx.save(); ctx.shadowColor = P.glow; ctx.shadowBlur = 10;
+      arcs.forEach((path, i) => strokeArc(path, Math.min(1, Math.max(0, intro * 1.6 - i * .08)), P.arc, 1.5));
+      if (visitorArc) strokeArc(visitorArc, intro, P.visitorArc, 1.2);
       ctx.restore();
       const pin = (p: LonLat, color: string, r: number, halo: number) => {
         const q = project(p); if (q.z <= 0) return; const X = cx + q.x * R, Y = cy - q.y * R;
         ctx.fillStyle = color.replace('1)', `${.22 * q.z})`); ctx.beginPath(); ctx.arc(X, Y, r * halo, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = color; ctx.beginPath(); ctx.arc(X, Y, r, 0, Math.PI * 2); ctx.fill();
       };
-      if (intro > .5) exits.forEach(e => pin(e, 'rgba(242,169,59,1)', 3, 3));
-      if (visitor) pin(visitor, 'rgba(94,224,200,1)', 3.2, 3.4);
-      pin(HUB, 'rgba(255,255,255,1)', 4, 3.2);
+      if (intro > .5) exits.forEach(e => pin(e, P.exit, 3, 3));
+      if (visitor) pin(visitor, P.visitor, 3.2, 3.4);
+      pin(HUB, P.hub, 4, 3.2);
       // 网关光环与数据包
       if (!reduced) {
         const hq = project(HUB);
-        if (hq.z > 0) { const k = (t % 2.6) / 2.6; ctx.strokeStyle = `rgba(255,255,255,${.6 * (1 - k)})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(cx + hq.x * R, cy - hq.y * R, 5 + k * 22, 0, Math.PI * 2); ctx.stroke(); }
+        if (hq.z > 0) { const k = (t % 2.6) / 2.6; ctx.strokeStyle = `rgba(${P.ring},${.6 * (1 - k)})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(cx + hq.x * R, cy - hq.y * R, 5 + k * 22, 0, Math.PI * 2); ctx.stroke(); }
         if (intro >= 1) arcs.forEach((path, i) => {
           const f = ((t * .22 + i * .37) % 1) * (path.length - 1), j = Math.floor(f), s = path[j], e = path[Math.min(path.length - 1, j + 1)], m = f - j;
           const va = toVec(s.p), vb = toVec(e.p), q = project(toLonLat(va.map((x, k) => x + (vb[k] - x) * m)), s.h + (e.h - s.h) * m); if (q.hidden) return;
-          ctx.save(); ctx.shadowColor = '#fff'; ctx.shadowBlur = 12; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(cx + q.x * R, cy - q.y * R, 2.2, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+          ctx.save(); ctx.shadowColor = P.packet; ctx.shadowBlur = 12; ctx.fillStyle = P.packet; ctx.beginPath(); ctx.arc(cx + q.x * R, cy - q.y * R, 2.2, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         });
       }
     }
     function frame(now: number) {
       const v = view.current, dt = Math.min(.05, (now - last) / 1000); last = now;
       if (!reduced && !v.drag && now > v.idleAt) v.lon = (v.lon + dt * 6) % 360;
-      draw(now); if (visible && !reduced) raf = requestAnimationFrame(frame);
+      draw(now); if (inView && !document.hidden && !reduced) raf = requestAnimationFrame(frame);
     }
-    const play = () => { cancelAnimationFrame(raf); last = performance.now(); if (reduced) draw(last); else raf = requestAnimationFrame(frame); };
-    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting && !document.hidden; if (visible) play(); else cancelAnimationFrame(raf); });
-    const onVisibility = () => { visible = !document.hidden; if (visible) play(); else cancelAnimationFrame(raf); };
+    const play = () => { cancelAnimationFrame(raf); if (!inView || document.hidden) return; last = performance.now(); if (reduced) draw(last); else raf = requestAnimationFrame(frame); };
+    const io = new IntersectionObserver(([e]) => { inView = e.isIntersecting; play(); });
+    const onVisibility = () => play();
     const down = (e: PointerEvent) => { const v = view.current; v.drag = {x: e.clientX, y: e.clientY, lon: v.lon, lat: v.lat}; el.setPointerCapture(e.pointerId); };
     const move = (e: PointerEvent) => { const v = view.current; if (!v.drag) return; v.lon = v.drag.lon - (e.clientX - v.drag.x) * .35; v.lat = Math.max(-10, Math.min(50, v.drag.lat + (e.clientY - v.drag.y) * .25)); if (reduced) draw(performance.now()); };
     const up = () => { const v = view.current; v.drag = null; v.idleAt = performance.now() + 1500; };
@@ -112,7 +122,7 @@ export function Globe({countries = [], visitor, className = ''}: {countries?: st
     el.addEventListener('pointerdown', down); el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
     resize(); play();
     return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); document.removeEventListener('visibilitychange', onVisibility); el.removeEventListener('pointerdown', down); el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); };
-  }, [dots, arcs, visitorArc, exits, visitor?.[0], visitor?.[1], reduced]);
+  }, [dots, arcs, visitorArc, exits, visitor?.[0], visitor?.[1], reduced, theme]);
 
   return <canvas ref={canvas} className={`rh-globe ${className}`} role="img" aria-label="ResiHub 网关与各地住宅出口节点的连接示意地球，可拖动旋转"/>;
 }

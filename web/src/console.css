@@ -1,0 +1,104 @@
+/* 控制台外观层：深色品牌侧栏、浅色工作区与总览。最后加载，覆盖 workspace.css 中的同名规则。 */
+.app-shell{--console-canvas:#f3f5fa;--console-navy:#0b1730}
+.app-shell .workspace-main{background:var(--console-canvas)}
+
+/* 侧栏 */
+.app-shell .sidebar{background:radial-gradient(120% 40% at 0% 100%,rgba(52,98,240,.28),transparent 70%),linear-gradient(180deg,#0e1c38 0%,#081124 100%);border-right:0;color:#c3cee0}
+.app-shell .sidebar .brand-wordmark strong{color:#fff}
+.app-shell .sidebar .brand-wordmark small{color:#8a9bb6}
+.app-shell .sidebar .nav-divider{color:#6f819e;border-color:rgba(255,255,255,.08)}
+.app-shell .sidebar nav>a{color:#b6c3d8;border-radius:10px;font-size:14.5px}
+.app-shell .sidebar nav>a>svg{color:#7f93b4}
+.app-shell .sidebar nav>a:hover{color:#fff;background:rgba(255,255,255,.06)}
+.app-shell .sidebar nav>a.active{color:#fff;background:linear-gradient(90deg,rgba(79,125,247,.42),rgba(79,125,247,.14));box-shadow:0 8px 24px -14px rgba(79,125,247,.9)}
+.app-shell .sidebar nav>a.active:before{background:#8aa9ff;top:12px;bottom:12px}
+.app-shell .sidebar nav>a.active>svg,.app-shell .sidebar nav>a:hover>svg{color:#a9c0ff}
+.app-shell .sidebar-footer>a{color:#c3cee0;border-color:rgba(255,255,255,.08)}
+.app-shell .sidebar-footer>a:hover{color:#fff}
+.app-shell .sidebar-footer>span{color:#6f819e}
+
+/* 总览：公告 */
+.dash-announcement{display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;padding:14px 18px;border-radius:12px;background:#fff8e8;border:1px solid #f3dfb2;color:#5c4813}
+.dash-announcement svg{flex:0 0 auto;margin-top:2px;color:#d9860b}
+.dash-announcement p{font-size:14.5px;line-height:1.7;white-space:pre-wrap}
+
+/* 总览：账户概况 */
+.dash-hero{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);align-items:center;gap:28px;padding:30px 32px;margin-bottom:20px;border-radius:18px;color:#c9d4e6;background:radial-gradient(500px 280px at 88% -20%,rgba(138,169,255,.5),transparent 70%),radial-gradient(420px 260px at 0% 120%,rgba(129,90,246,.35),transparent 70%),linear-gradient(120deg,#1d3f9c 0%,#14295e 45%,#0b1730 100%);box-shadow:0 24px 60px -36px rgba(20,41,94,.9)}
+.dash-hero:after{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(255,255,255,.14) 1px,transparent 1px);background-size:18px 18px;mask-image:linear-gradient(90deg,transparent 30%,#000)}
+.dash-hello{display:block;margin-bottom:14px;font-size:16px;font-weight:600;color:#fff}
+.dash-hero-main small{font-size:13.5px;color:#a9b9d6}
+.dash-balance{display:block;margin:4px 0 20px;font-size:40px;line-height:1.1;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.dash-hero-actions{display:flex;flex-wrap:wrap;gap:10px}
+.dash-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:40px;padding:0 18px;border-radius:10px;font-size:14.5px;font-weight:600;border:1px solid transparent;transition:background .15s,border-color .15s}
+.dash-btn-light{background:#fff;color:#14295e}
+.dash-btn-light:hover{background:#e8eefb}
+.dash-btn-ghost{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.06)}
+.dash-btn-ghost:hover{border-color:rgba(255,255,255,.65);background:rgba(255,255,255,.12)}
+.dash-btn-icon{width:40px;padding:0;color:#dbe4f3;border-color:rgba(255,255,255,.2)}
+.dash-btn-icon:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+.dash-hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.dash-hero-stats a{display:flex;flex-direction:column;gap:8px;padding:18px 18px 16px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(6px);transition:background .15s,border-color .15s}
+.dash-hero-stats a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
+.dash-hero-stats span{font-size:13.5px;color:#a9b9d6}
+.dash-hero-stats strong{font-size:30px;line-height:1;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+.dash-hero-stats em{margin-left:5px;font-style:normal;font-size:14px;font-weight:500;color:#a9b9d6}
+.dash-hero-stats a.is-warn strong{color:#f6c77c}
+
+/* 总览：IP 列表与新手引导 */
+.app-shell .dash-ips,.app-shell .dash-activity{border-radius:16px;border:1px solid #e3e8f1;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.dash-start{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);align-items:center;gap:32px;padding:30px 28px}
+.dash-start-copy h3{font-size:20px;font-weight:700;color:#172033}
+.dash-start-copy p{margin:8px 0 18px;font-size:14.5px;color:#4f5969}
+.dash-start-copy .button{min-height:42px;padding:0 20px;font-size:14.5px}
+.dash-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.dash-steps li{position:relative;display:flex;align-items:flex-start;gap:12px}
+.dash-steps li:not(:last-child):after{content:"";position:absolute;top:16px;left:44px;right:8px;height:1px;background:linear-gradient(90deg,#c9d6f2,transparent)}
+.dash-steps li>div{position:relative;z-index:1;padding-top:5px;background:#fff;padding-right:8px}
+.dash-steps b{flex:0 0 auto;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:#2454d6;background:#e8efff}
+.dash-steps li.is-done b{color:#0f9f6e;background:#dcf6ec}
+.dash-steps strong{display:block;font-size:15px;font-weight:600;color:#172033}
+.dash-steps span{display:block;margin-top:3px;font-size:13.5px;color:#5b6676}
+.dash-gateway{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:16px 28px;border-top:1px solid #edf0f6;background:#fafbfd}
+.dash-gateway-label{font-size:13.5px;color:#4f5969}
+.dash-gateway code{font-size:15px;font-weight:600;color:#172033;background:none;padding:0}
+.dash-protocols{display:flex;gap:6px}
+.dash-protocols i{font-style:normal;font-size:12.5px;font-weight:600;color:#2454d6;background:#e8efff;padding:3px 9px;border-radius:999px}
+.dash-gateway .text-link{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:14px}
+
+/* 总览：订单与余额变动 */
+.dash-activity{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);margin-top:20px}
+.dash-col{min-width:0}
+.dash-col+.dash-col{border-left:1px solid #edf0f6}
+.dash-empty{padding:34px 24px;font-size:14.5px;color:#5b6676;text-align:center}
+
+@media(max-width:1250px){.dash-hero{grid-template-columns:1fr}.dash-start{grid-template-columns:1fr}}
+@media(max-width:900px){.dash-activity{grid-template-columns:1fr}.dash-col+.dash-col{border-left:0;border-top:1px solid #edf0f6}}
+@media(max-width:640px){.dash-hero{padding:24px 20px}.dash-balance{font-size:32px}.dash-hero-stats{gap:8px}.dash-hero-stats a{padding:14px 12px}.dash-hero-stats strong{font-size:24px}.dash-steps{grid-template-columns:1fr}.dash-steps li:after{display:none}.dash-start{padding:22px 18px}.dash-gateway{padding:14px 18px}.dash-gateway .text-link{margin-left:0}}
+
+/* 接入说明（Markdown）正文排版，覆盖 workspace.css 的 .docs-article 规则 */
+.app-shell .docs-article.markdown-body h2{margin:38px 0 12px;font-size:19px}
+.app-shell .docs-article.markdown-body>h2:first-child{margin-top:0}
+.app-shell .docs-article.markdown-body p,.app-shell .docs-article.markdown-body li{font-size:15px;line-height:1.85;color:#3b4658}
+.app-shell .docs-article.markdown-body p{margin:0 0 12px}
+.app-shell .docs-article.markdown-body .docs-code{margin:18px 0 6px}
+
+/* 浅色版本（覆盖上方深色侧栏与概况栏） */
+.app-shell .sidebar{background:#fff;border-right:1px solid #e4e9f1;color:#3b4762}
+.app-shell .sidebar .brand-wordmark strong{color:#0f1b33}
+.app-shell .sidebar .brand-wordmark small{color:#5b6880}
+.app-shell .sidebar .nav-divider{color:#7a869b;border-color:#edf0f6}
+.app-shell .sidebar nav>a{color:#3b4762}
+.app-shell .sidebar nav>a>svg{color:#6b7891}
+.app-shell .sidebar nav>a:hover{color:#2454d6;background:#f3f6fd}
+.app-shell .sidebar nav>a.active{color:#2454d6;background:#eaf0ff;box-shadow:none;font-weight:600}
+.app-shell .sidebar nav>a.active:before{background:#2454d6}
+.app-shell .sidebar nav>a.active>svg,.app-shell .sidebar nav>a:hover>svg{color:#2454d6}
+.app-shell .sidebar-footer>a{color:#3b4762;border-color:#edf0f6}
+.app-shell .sidebar-footer>a:hover{color:#2454d6}
+.app-shell .sidebar-footer>span{color:#8a95a7}
+.dash-hero{background:radial-gradient(460px 260px at 92% -10%,rgba(255,255,255,.28),transparent 70%),radial-gradient(420px 260px at 0% 120%,rgba(139,92,246,.45),transparent 70%),linear-gradient(120deg,#2b5fe6 0%,#3d6ef0 55%,#6a5cf0 100%);box-shadow:0 24px 60px -32px rgba(36,84,214,.75)}
+.dash-hero-main small,.dash-hero-stats span,.dash-hero-stats em{color:#dbe5ff}
+.dash-btn-light{color:#1f4fd0}
+.dash-hero-stats a{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22)}
+.dash-hero-stats a:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4)}
+.dash-hero-stats a.is-warn strong{color:#ffe1a8}

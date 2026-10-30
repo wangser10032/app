@@ -1,0 +1,190 @@
+/* A continuous workspace; raised surfaces are reserved for menus and dialogs. */
+.app-shell{--accent:#2655d8;--ink:#142440;--muted:#64718a;--line:#e4e9f1;color:var(--ink);background:#f5f7fb;min-height:100dvh}
+.app-shell .sidebar{width:220px;padding:30px 16px 20px;display:flex;flex-direction:column;background:#fff;border-right:1px solid #e4e9f1}
+.app-shell .sidebar>.brand{margin:0 12px 31px;gap:11px}
+.app-shell .brand-symbol{width:34px;height:36px;border-radius:8px;background:#2655d8}
+.app-shell .brand-wordmark strong{color:#142440;font-size:23px}
+.app-shell .brand-wordmark small{color:#71809a;font-size:12px;letter-spacing:1px}
+.app-shell .sidebar nav{display:flex;flex-direction:column;gap:5px;overflow-y:auto}
+.app-shell .nav-divider{padding:0 14px;margin:24px 0 7px;color:#8995a9;font-size:12px;letter-spacing:1px;font-weight:500}
+.app-shell .nav-first-label{margin-top:0}
+.app-shell .sidebar nav>a{position:relative;min-height:44px;padding:12px 15px;gap:13px;border-radius:5px;color:#56627a;font-size:14px;font-weight:400;transition:background .18s,color .18s}
+.app-shell .sidebar nav>a>svg{color:#77859c;flex-shrink:0}
+.app-shell .sidebar nav>a:hover{color:#2655d8;background:#f5f7fd}
+.app-shell .sidebar nav>a.active{background:#edf2ff;color:#2655d8;font-weight:600}
+.app-shell .sidebar nav>a.active:before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;background:#2655d8;border-radius:2px}
+.app-shell .sidebar nav>a.active:after{content:none;display:none}
+.app-shell .sidebar nav>a.active>svg{color:#2655d8}
+.sidebar-footer{margin-top:auto;padding:26px 13px 0}
+.sidebar-footer>a{display:flex;align-items:center;justify-content:space-between;color:#53617a;font-size:13px;padding:14px 0;border-top:1px solid #e8edf4}
+.sidebar-footer>a:hover{color:#2655d8}
+.sidebar-footer>span{display:block;color:#9aa5b7;font-size:11px;letter-spacing:.3px}
+.app-shell .workspace-main{margin-left:220px;min-height:100dvh;background:#f5f7fb}
+.app-shell .workspace-top{height:70px;position:sticky;top:0;padding:0 38px;background:#ffffffed;backdrop-filter:blur(12px);border-bottom:1px solid #e7ecf4}
+.app-shell .page-location>strong{font-weight:500;color:#344760}
+.app-shell .header-root{color:#8a96a8;font-size:13px}
+.app-shell .header-slash{color:#c5cdda}
+.app-shell .top-actions{gap:24px}
+.app-shell .wallet-bar{border-right:1px solid #e7ecf4;padding-right:24px}
+.app-shell .header-balance small{color:#7a879c;font-size:13px}
+.app-shell .header-balance>span{color:#304361;font-size:14px}
+.app-shell .recharge-button{font-size:13px;padding:5px 12px;border-color:#dce4f5;background:#f6f8ff;border-radius:4px}
+.app-shell .account-label strong{font-size:13px;color:#344760}
+.app-shell .account-label small{color:#8793a6;font-size:12px}
+.app-shell .avatar{background:#e9effe;color:#2655d8;width:34px;height:34px;font-size:13px;box-shadow:0 0 0 4px #f6f8fd}
+.app-shell .workspace-content{max-width:1500px;padding:36px 38px 56px}
+.app-shell .page-heading{margin-bottom:30px;gap:18px}
+.app-shell .page-heading h1{font-size:25px;letter-spacing:-.6px;line-height:1.4;color:#142440;font-weight:700}
+.app-shell .page-heading p{font-size:13px;color:#7a879d;line-height:1.7;margin-top:8px}
+.app-shell .button{min-height:37px;border-radius:5px;font-size:13px;font-weight:500;gap:7px;padding:9px 15px;background:#2655d8;border-color:#2655d8;box-shadow:none}
+.app-shell .button:hover{background:#2049be;border-color:#2049be}
+.app-shell .button.secondary{color:#53647d;border-color:#dce4f1;background:#fff}
+.app-shell .button.secondary:hover{color:#2655d8;border-color:#b3c5ee;background:#f8faff}
+.app-shell .button.small{min-height:29px;padding:5px 11px;font-size:13px}
+.app-shell .button.icon-only{width:37px;padding:8px}
+.app-shell .text-link{font-size:13px;gap:6px;color:#4468bc}
+.app-shell .text-link:hover{color:#2655d8}
+.app-shell .panel{border:0;border-radius:0;box-shadow:none;background:#fff}
+.app-shell .panel-heading{padding:22px 26px;min-height:0;border-color:#edf0f5}
+.app-shell h2{font-size:14px;font-weight:600;color:#1d304d}
+.app-shell .count-tag{color:#728099;background:#f0f3f9;font-size:12px;min-width:23px;padding:2px 6px}
+
+.overview-topline{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:34px;margin:0 0 32px}
+.resource-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:9px 0;align-content:center}
+.overview-metric{border-right:1px solid #e0e6f0;padding:0 28px;min-width:0}
+.overview-metric:first-child{padding-left:0}
+.overview-metric:last-child{border:0}
+.overview-metric>span{display:flex;align-items:center;gap:8px;font-size:13px;color:#6c7a92;white-space:nowrap}
+.overview-metric>span>svg{color:#8d9ab0}
+.overview-metric>strong{display:block;margin:15px 0 12px;font-family:'Archivo Variable','Noto Sans SC',sans-serif;font-variant-numeric:tabular-nums;font-size:40px;font-weight:500;letter-spacing:-1.5px;line-height:1.15;color:#1c304d}
+.overview-metric.primary-metric>strong{color:#2655d8}
+.overview-metric>strong.expiring-count{color:#a56720}
+.overview-metric>strong>small{font-family:inherit;font-size:13px;font-weight:400;color:#8c98ac;margin-left:9px;letter-spacing:0}
+.overview-metric>a{font-size:12px;color:#7c8aa2;display:inline-flex;align-items:center;gap:7px}
+.overview-metric>a:hover{color:#2655d8}
+.overview-balance{background:#eaf0fe;border-left:2px solid #c3d2fa;padding:19px 22px}
+.overview-balance>div{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.overview-balance>div>span{display:flex;align-items:center;gap:7px;color:#5c7199;font-size:13px}
+.overview-balance>div>a{display:flex;align-items:center;gap:4px;font-size:11px;color:#7088b6}
+.overview-balance>strong{display:block;font-family:'Archivo Variable','Noto Sans SC',sans-serif;font-size:30px;font-weight:500;color:#254d9f;letter-spacing:-.8px;margin:14px 0 12px;font-variant-numeric:tabular-nums}
+.overview-balance>.balance-recharge{display:inline-flex;align-items:center;gap:12px;color:#315ebf;font-size:13px;font-weight:500}
+.dashboard-workbench{background:#fff;border-top:2px solid #e0e7f3;box-shadow:0 2px 8px #29496c04}
+.workbench-heading{padding:24px 28px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.workbench-heading h2{font-size:14px}
+.resource-empty{display:grid;grid-template-columns:104px minmax(0,1fr) auto;align-items:center;gap:25px;padding:28px 36px 40px;min-height:218px}
+.resource-empty-symbol{position:relative;display:flex;align-items:center;justify-content:center;width:104px;height:104px;border-radius:50%;background:#f2f5fd;color:#98b1df}
+.resource-empty-symbol:before{content:"";position:absolute;inset:9px;border:1px dashed #d1ddf2;border-radius:50%}
+.resource-empty-symbol>span{position:absolute;bottom:6px;right:0;width:32px;height:32px;display:grid;place-items:center;background:#e2eafd;color:#426bc5;border:4px solid #fff;border-radius:50%}
+.resource-empty-copy h3{font-size:17px;font-weight:500;color:#253d60;letter-spacing:-.25px;margin:0 0 9px}
+.resource-empty-copy p{font-size:13px;line-height:1.85;color:#6d809c;max-width:340px}
+.resource-empty-copy>div{display:flex;align-items:center;gap:22px;margin-top:22px}
+.resource-empty-copy .button{font-size:13px;min-height:34px;padding:7px 14px}
+.resource-start-steps{margin:0;padding:3px 4px 3px 29px;list-style:none;border-left:1px solid #edf1f7;counter-reset:start;min-width:184px}
+.resource-start-steps li{display:flex;align-items:center;gap:11px;font-size:12px;color:#718099;line-height:1.4;padding:11px 0;counter-increment:start}
+.resource-start-steps li:before{content:counter(start);font-family:'Archivo Variable',sans-serif;font-size:12px;color:#6883b1;border:1px solid #dce5f5;border-radius:50%;width:18px;height:18px;display:grid;place-items:center;flex-shrink:0}
+.app-shell .dashboard-finance{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr);gap:0;margin:0;border-top:1px solid #e8edf5;align-items:start}
+.dashboard-finance>.recent-transactions{border-left:1px solid #e8edf5;min-height:100%}
+.finance-empty{display:flex;align-items:center;gap:17px;padding:12px 28px 35px;min-height:100px}
+.finance-empty>svg{color:#b6c3d8;flex-shrink:0}
+.finance-empty strong{font-size:13px;font-weight:500;color:#6f7f98}
+.finance-empty p{font-size:12px;color:#71829d;line-height:1.7;margin-top:5px}
+.app-shell .dashboard-finance .state{min-height:130px}
+.app-shell .transaction-list{padding:0 28px 6px}
+.app-shell .transaction-list li{padding:15px 0;gap:12px}
+.app-shell .transaction-icon{border:0;background:#f4f6fa;border-radius:50%;width:30px;height:30px}
+.app-shell .transaction-list strong{font-size:13px;color:#4e607b}
+.app-shell .transaction-list small{font-size:11px;color:#77869e}
+.app-shell .transaction-amount{font-size:13px}
+.app-shell .transaction-amount.positive{color:#318466}
+
+.app-shell table{font-size:13px}
+.app-shell th{height:41px;padding:12px 24px;background:#f9fafc;color:#718199;font-size:12px;font-weight:400;border-bottom:1px solid #edf1f6}
+.app-shell td{padding:17px 24px;color:#50617b;border-bottom:1px solid #edf1f6;line-height:1.6}
+.app-shell td strong{font-weight:500;color:#344967}
+.app-shell td small{color:#7b8ba1;font-size:11px;margin-top:5px}
+.app-shell code{font-size:12px;color:#52657f}
+.app-shell tbody tr:hover{background:#fafbfe}
+.app-shell .badge{font-size:12px;padding:3px 7px;border-radius:4px}
+.app-shell .country-code{font-size:11px;min-width:29px;padding:5px;border:0;background:#f0f4fa;color:#687e9e}
+.app-shell .country-cell small{font-size:11px}
+.app-shell .country-cell strong{font-size:13px}
+.app-shell .compact-ip-table td,.app-shell .compact-ip-table th{padding-left:28px;padding-right:28px}
+.app-shell .dashboard-finance th,.app-shell .dashboard-finance td{padding-left:28px;padding-right:18px}
+.app-shell .dashboard-finance td>small{font-size:11px}
+.app-shell .state{min-height:190px;padding:40px 22px;gap:11px}
+.app-shell .state strong{font-size:14px;font-weight:500;color:#4f6483}
+.app-shell .state p,.app-shell .empty-content{font-size:13px;color:#6e7e95;line-height:1.8}
+.app-shell .state .button{font-size:13px;min-height:32px;background:#f7f9fe;color:#3c67c2;border-color:#e0e7f7}
+.app-shell .page-tabs{gap:28px;margin-bottom:0;border-bottom:1px solid #e1e7f0}
+.app-shell .page-tabs button{font-size:13px;padding:0 3px 15px;min-height:34px;color:#8490a4}
+.app-shell .page-tabs button.active{color:#2655d8}
+.app-shell .page-tabs .tab-count{display:inline-block;margin-left:8px;padding:1px 5px;background:#eaf0fc;border-radius:3px;font-size:11px;color:#6a84b6;line-height:1.5}
+.app-shell .static-page>.panel{box-shadow:none}
+.app-shell .filter-bar{padding:22px 24px;gap:12px;border-bottom:1px solid #edf1f6;background:#fff}
+.app-shell .filter-bar select,.app-shell .search-form input{font-size:13px;border-color:#e3e8f1;background:#fbfcfe;min-height:35px;border-radius:4px}
+.app-shell .filter-bar>.button{font-size:12px;border-color:#e3e8f1;min-height:35px}
+.app-shell .filter-bar>.icon-button{color:#8496b3}
+.app-shell .pagination{padding:17px 24px;border-top:1px solid #edf1f6;font-size:12px;color:#8e9bb0}
+.app-shell .pagination .button{padding:5px 9px;font-size:12px}
+.app-shell .static-page .ip-table td{height:75px}
+.app-shell .static-page .remark-button{font-size:12px;color:#718099}
+.app-shell .price{font-size:17px;color:#2655d8;letter-spacing:-.5px}
+.history-toolbar{display:flex;align-items:center;justify-content:space-between;padding:22px 25px;border-bottom:1px solid #edf1f6;gap:12px}
+.history-toolbar strong{font-size:13px;font-weight:500;color:#475d7d}
+.history-toolbar>span{font-size:12px;color:#718099}
+.app-shell .history-empty-icon{display:block!important;color:#b0bfd7!important;margin-bottom:5px}
+.pricing-note{display:flex;align-items:center;gap:8px;padding:17px 24px;color:#91a0b5;font-size:12px;border-bottom:1px solid #edf1f6}
+.pricing-note svg{color:#718ebd;flex-shrink:0}
+
+.app-shell .recharge-page .recharge-grid{background:#fff;gap:0;max-width:none;grid-template-columns:minmax(0,1fr) 290px}
+.app-shell .recharge-page .recharge-grid>.panel{padding:30px}
+.app-shell .recharge-page .recharge-account-panel{background:#f0f4fd;border-left:1px solid #e7edf8;align-self:stretch}
+.app-shell .recharge-page .recharge-balance-value{color:#2655d8}
+.app-shell .recharge-page .recharge-guidance p{font-size:13px;color:#7a8da9}
+.app-shell .recharge-page .recharge-history{margin:0;max-width:none;border-top:1px solid #e7edf5}
+.app-shell .recharge-page .recharge-history .panel-heading{padding:24px 30px}
+.app-shell .recharge-page .amount-grid button{background:#fafbfe;border-color:#e8edf5;border-radius:5px;color:#61758f;font-size:21px}
+.app-shell .recharge-page .amount-grid button.selected{border-color:#6487e8;background:#f2f6ff;color:#2655d8}
+.app-shell .recharge-page .payment-channels button{background:#fbfcfe;border-color:#e4eaf4;font-size:13px}
+.app-shell .recharge-page .payment-channels button.selected{background:#f3f7ff;border-color:#6487e8}
+.app-shell .recharge-page .recharge-section-title>span,.app-shell .recharge-page .recharge-custom-amount small{font-size:12px;color:#718099}
+.app-shell .settings-page .settings-grid{background:#fff;gap:0;max-width:none;grid-template-columns:1fr 1fr;align-items:stretch}
+.app-shell .settings-page .settings-grid>.panel{padding:30px 34px}
+.app-shell .settings-page .settings-grid>.panel+ .panel{border-left:1px solid #e8edf4}
+.app-shell .settings-page .settings-section-heading{border:0;margin-bottom:28px;padding-bottom:0}
+.app-shell .settings-page .settings-section-heading h2{font-size:15px}
+.app-shell .settings-page .settings-section-heading p{font-size:13px;color:#71839b}
+.app-shell .settings-page .account-details{margin-bottom:30px}
+.app-shell .settings-page .account-details>div{padding:16px 0}
+.app-shell .settings-page .account-details dt{font-size:13px;color:#6a7f9c}
+.app-shell .settings-page .account-details dd{font-size:13px;color:#536985}
+.app-shell .settings-page .account-nickname-form label,.app-shell .settings-page .settings-password-form label{font-size:13px;color:#6b7f9a}
+.app-shell .settings-page .account-nickname-form input,.app-shell .settings-page .settings-password-form input{font-size:13px;min-height:40px;background:#fcfdff;border-color:#e2e9f3}
+.app-shell .settings-page input::placeholder{color:#8291a7}
+.app-shell .settings-page form small{font-size:11px;color:#7b8ba3}
+.docs-layout{display:grid;grid-template-columns:180px minmax(0,1fr);gap:38px;background:#fff;padding:34px}
+.docs-index{display:flex;flex-direction:column;gap:4px;align-self:start;position:sticky;top:99px;border-right:1px solid #edf1f6;padding-right:25px}
+.docs-index>span{font-size:12px;color:#7a88a0;margin-bottom:15px}
+.docs-index>a{font-size:13px;color:#7588a3;padding:10px 0}
+.docs-index>a:hover{color:#2655d8}
+.docs-article{min-width:0;max-width:820px}
+.docs-article>section{padding-bottom:32px;scroll-margin-top:100px}
+.docs-article>section+section{padding-top:29px;border-top:1px solid #edf1f6}
+.docs-article>section:last-child{padding-bottom:0}
+.docs-article h2{font-size:16px;margin:0 0 15px}
+.docs-article p{font-size:13px;color:#607791;line-height:2}
+.docs-code{position:relative;margin-top:20px;padding:26px 24px;background:#162b4a;border-radius:5px;overflow:hidden}
+.app-shell .docs-code pre{font-size:12px;line-height:1.9;color:#b9d2ee;overflow:auto;margin:0;padding:0 0 16px;background:transparent;border:0}
+.docs-code .button.secondary{border-color:#324968;background:#203956;color:#c7d6ed;font-size:11px}
+.docs-article dl{margin:0}
+.docs-article dt{font-size:13px;color:#4a6383;font-weight:500;margin-top:16px}
+.docs-article dd{font-size:13px;color:#6f829b;line-height:1.9;margin:7px 0 0}
+
+@media(min-width:1800px){.app-shell .workspace-content{padding-top:42px}.overview-topline{margin-bottom:38px}.resource-empty{min-height:240px}}
+@media(max-width:1250px){.app-shell .workspace-content{padding:30px 28px 45px}.app-shell .workspace-top{padding:0 28px}.overview-topline{grid-template-columns:minmax(0,1fr) 250px;gap:20px}.overview-metric{padding:0 20px}.overview-metric>span>svg{display:none}.overview-balance{padding:18px}.resource-start-steps{display:none}.resource-empty{grid-template-columns:104px minmax(0,1fr);padding:30px}.app-shell .account-label{display:none}.docs-layout{grid-template-columns:140px minmax(0,1fr);gap:26px;padding:28px}.app-shell .recharge-page .recharge-grid{grid-template-columns:minmax(0,1fr) 250px}}
+@media(max-width:1050px){.app-shell .sidebar{width:196px;padding:25px 12px 18px}.app-shell .sidebar>.brand{margin-left:10px;gap:9px}.app-shell .brand-wordmark strong{font-size:21px}.app-shell .brand-wordmark small{font-size:11px}.app-shell .workspace-main{margin-left:196px}.overview-topline{grid-template-columns:1fr;gap:24px}.overview-balance{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:26px;padding:18px 22px}.overview-balance>div>a{display:none}.overview-balance>strong{font-size:27px;margin:0}.overview-metric{padding:0 24px}.overview-metric>span>svg{display:block}.app-shell .dashboard-finance{grid-template-columns:1fr}.dashboard-finance>.recent-transactions{border-left:0;border-top:1px solid #edf1f6}.app-shell .recharge-page .recharge-grid{grid-template-columns:1fr}.app-shell .recharge-page .recharge-account-panel{border-left:0;border-top:1px solid #e8edf5}.app-shell .settings-page .settings-grid{grid-template-columns:1fr}.app-shell .settings-page .settings-grid>.panel+ .panel{border-left:0;border-top:1px solid #e8edf5}}
+@media(max-width:800px){.app-shell .sidebar{width:220px;transform:translateX(-100%)}.app-shell .sidebar.sidebar-open{transform:translateX(0)}.app-shell .workspace-main{margin-left:0}.app-shell .workspace-top{padding:0 18px;height:62px}.app-shell .workspace-content{padding:25px 18px 36px}.app-shell .page-heading{margin-bottom:28px;align-items:center}.app-shell .page-heading h1{font-size:22px}.app-shell .page-heading p{font-size:12px;max-width:none}.app-shell .header-root,.app-shell .header-slash{display:none}.app-shell .header-balance small{display:none}.app-shell .wallet-bar{padding-right:16px;gap:7px}.app-shell .top-actions{gap:16px}.app-shell .header-balance>span{font-size:13px}.app-shell .wallet-bar>svg{width:15px}.app-shell .overview-topline{margin-bottom:25px}.overview-metric>strong{font-size:35px}.overview-metric>span{font-size:12px}.overview-metric{padding:0 20px}.overview-metric>span>svg{display:none}.overview-metric>a{font-size:11px;gap:4px}.overview-balance{padding:16px 18px;gap:15px}.overview-balance>strong{font-size:24px}.overview-balance>div>span{font-size:12px}.overview-balance>.balance-recharge{font-size:12px;gap:7px}.workbench-heading{padding:22px 22px 18px}.resource-empty{padding:22px 24px 32px;grid-template-columns:80px minmax(0,1fr);gap:22px;min-height:205px}.resource-empty-symbol{width:80px;height:80px}.resource-empty-symbol>svg{width:52px;height:52px}.resource-empty-copy h3{font-size:15px}.resource-empty-copy p{font-size:12px}.resource-empty-copy>div{gap:17px}.finance-empty{padding:12px 22px 30px}.app-shell .filter-bar{padding:18px;gap:10px}.app-shell .pagination{padding:16px 18px}.app-shell .page-tabs{gap:26px}.app-shell .recharge-page .recharge-grid>.panel{padding:25px}.app-shell .recharge-page .recharge-history .panel-heading{padding:22px 25px}.app-shell .settings-page .settings-grid>.panel{padding:27px}.docs-layout{grid-template-columns:1fr;gap:26px;padding:25px}.docs-index{position:static;flex-direction:row;flex-wrap:wrap;border:0;border-bottom:1px solid #edf1f6;padding:0 0 13px;gap:9px 22px}.docs-index>span{display:none}.docs-index>a{padding:4px 0;font-size:12px}.app-shell .compact-ip-table td,.app-shell .compact-ip-table th{padding-left:22px;padding-right:22px}.app-shell .table-scroll th:last-child{background:#f9fafc}}
+@media(max-width:480px){.app-shell .workspace-content{padding:23px 14px 32px}.app-shell .workspace-top{padding:0 15px}.app-shell .page-heading{gap:10px}.app-shell .page-heading h1{font-size:21px}.app-shell .page-heading p{font-size:11px;max-width:215px}.app-shell .heading-actions{gap:6px}.app-shell .heading-actions>.button{font-size:12px;padding:8px 10px}.app-shell .heading-actions>.icon-only{width:34px;min-width:34px}.overview-metric{padding:0 14px}.overview-metric>span{font-size:11px}.overview-metric>strong{font-size:32px;margin:13px 0 11px}.overview-metric>strong>small{font-size:11px;margin-left:5px}.overview-metric>a svg{display:none}.overview-balance{grid-template-columns:1fr auto;gap:12px 16px}.overview-balance>div{grid-column:1}.overview-balance>strong{grid-row:1 / span 2;grid-column:2;font-size:27px}.overview-balance>.balance-recharge{grid-column:1}.resource-empty{grid-template-columns:1fr;gap:20px;align-items:start;padding:22px}.resource-empty-symbol{width:66px;height:66px}.resource-empty-symbol>svg{width:43px;height:43px}.resource-empty-symbol>span{width:27px;height:27px;bottom:0;right:-5px}.resource-empty-symbol>span>svg{width:14px}.resource-empty-copy p{max-width:none}.resource-empty-copy>div{margin-top:19px}.app-shell .workbench-heading h2{font-size:13px}.app-shell .workbench-heading{padding-left:21px;padding-right:21px}.app-shell .text-link{font-size:12px}.app-shell .recharge-page .recharge-grid>.panel{padding:22px}.app-shell .recharge-page .amount-grid button{font-size:19px}.app-shell .recharge-page .payment-channels{gap:8px}.app-shell .recharge-page .payment-channels button>strong{font-size:13px}.app-shell .settings-page .settings-grid>.panel{padding:24px}.docs-layout{padding:23px}.docs-code{padding:20px 18px}.app-shell .wallet-bar>svg{display:none}.app-shell .avatar{width:29px;height:29px}.app-shell .top-actions{gap:13px}.app-shell .wallet-bar{padding-right:12px}.app-shell .recharge-button{padding:4px 9px}}
+@media(prefers-reduced-transparency:reduce){.app-shell .workspace-top{background:#fff;backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){.app-shell .sidebar nav>a{transition:none}}
+@media(max-width:800px){.app-shell .sidebar{visibility:hidden}.app-shell .sidebar.sidebar-open{visibility:visible}}

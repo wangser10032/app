@@ -3,93 +3,21 @@ import {Link, Navigate, useNavigate, useSearchParams} from 'react-router-dom';
 import {ArrowRight, ArrowUpRight, EnvelopeSimple, LockKey, WarningCircle, Check, ArrowsClockwise, Wallet, Eye, EyeSlash} from '@phosphor-icons/react';
 import {api, money, date, message} from './api';
 import {useAuth, useToast, useResource, useWorkspace, passwordIssue, Brand, Heading, Loading, ErrorState, Empty, Badge, Modal} from './ui';
-import {WorldMap} from './world-map';
 import './account-polish.css';
-import './landing.css';
 
 // Both live payment providers create codes with a 30 minute payment window.
 // This controls the cashier only; the server remains authoritative for payment status.
 const PAYMENT_WINDOW_MS = 30 * 60 * 1000;
 const paymentCodeExpiry = (payment: any) => Number(payment?.created_at) + PAYMENT_WINDOW_MS;
 
-export function AuthPage({kind}: {kind: 'login' | 'register' | 'forgot'}) {
-  const auth = useAuth(), nav = useNavigate(), toast = useToast();
-  const [tab, setTab] = useState('password'), [email, setEmail] = useState(''), [password, setPassword] = useState(''), [code, setCode] = useState(''), [nickname, setNickname] = useState(''), [remember, setRemember] = useState(true), [busy, setBusy] = useState(false), [sending, setSending] = useState(false), [cooldown, setCooldown] = useState(0), [error, setError] = useState(''), [devCode, setDevCode] = useState(''), [showPassword, setShowPassword] = useState(false);
-  useEffect(() => {setError(''); setCode(''); setPassword(''); setDevCode(''); setShowPassword(false);}, [kind]);
-  useEffect(() => {if (!cooldown) return; const timer = setTimeout(() => setCooldown(cooldown - 1), 1000); return () => clearTimeout(timer);}, [cooldown]);
-  if (auth.ready && auth.user && kind !== 'forgot') return <Navigate to="/app" replace/>;
-  const title = kind === 'register' ? '创建账号' : kind === 'forgot' ? '重置密码' : '登录账号';
-  async function sendCode() {
-    setSending(true); setError('');
-    try {
-      const data = await api('/auth/send-code', 'POST', {email, purpose: kind === 'register' ? 'register' : kind === 'forgot' ? 'reset' : 'login'});
-      setCooldown(60); setDevCode(data.dev_code || ''); toast(data.dev_code ? '开发验证码已生成' : '验证码已发送，请检查邮箱。');
-    } catch (e) {setError(message(e));} finally {setSending(false);}
-  }
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    if ((kind !== 'login' || tab === 'password') && passwordIssue(password)) {setError(passwordIssue(password)); return;}
-    setBusy(true); setError('');
-    try {
-      if (kind === 'forgot') {
-        await api('/auth/reset-password', 'POST', {email, code, password}); toast('密码已重置，请重新登录。'); auth.logout(); nav('/login');
-      } else {
-        const data = await api(kind === 'register' ? '/auth/register' : tab === 'code' ? '/auth/login-code' : '/auth/login', 'POST', {email, password, code, nickname, remember});
-        auth.accept(data); nav('/app');
-      }
-    } catch (e) {setError(message(e));} finally {setBusy(false);}
-  }
-  const needsCode = kind !== 'login' || tab === 'code';
-  const needsPassword = kind !== 'login' || tab === 'password';
-  const lead = kind === 'register' ? '只需一个邮箱。验证码会发送到你填写的地址。' : kind === 'forgot' ? '验证注册邮箱后，设置新的登录密码。' : '登录后管理已购 IP、订单和余额。';
-  const switchTab = (next: string) => {setTab(next); setError('');};
-  return <div className="rh-auth">
-    <div className="rh-auth-card">
-      <aside className="rh-auth-side">
-        <Brand/>
-        <div className="rh-auth-pitch">
-          <h2>租期内，<br/><span className="rh-keep">出口始终是同一个 IP</span></h2>
-          <ul>
-            <li><Check size={16} weight="bold"/>独享静态住宅 IP，不与他人共用</li>
-            <li><Check size={16} weight="bold"/>按 IP 数量和天数计费，续费保留原 IP</li>
-            <li><Check size={16} weight="bold"/>支付宝、微信充值，余额实时到账</li>
-          </ul>
-        </div>
-        <WorldMap className="rh-auth-map"/>
-      </aside>
-      <main className="rh-auth-main">
-        <div className="rh-auth-mobile-brand"><Brand/></div>
-        <h1>{title}</h1>
-        <p className="rh-auth-lead">{lead}</p>
-        {kind === 'login' && <div className="rh-segment" role="tablist" aria-label="登录方式">
-          <button type="button" role="tab" aria-selected={tab === 'password'} onClick={() => switchTab('password')}>密码登录</button>
-          <button type="button" role="tab" aria-selected={tab === 'code'} onClick={() => switchTab('code')}>验证码登录</button>
-        </div>}
-        <form onSubmit={submit} className="rh-auth-form">
-          <div className="rh-field"><label htmlFor="email">邮箱地址</label><input id="email" name="email" type="email" autoComplete="username" spellCheck={false} required maxLength={254} placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)}/></div>
-          {kind === 'register' && <div className="rh-field"><label htmlFor="nickname">昵称<span>选填</span></label><input id="nickname" name="nickname" maxLength={40} autoComplete="nickname" value={nickname} onChange={e => setNickname(e.target.value)} placeholder="在控制台中显示"/></div>}
-          {needsCode && <div className="rh-field"><label htmlFor="code">邮箱验证码</label><div className="rh-code"><input id="code" name="code" inputMode="numeric" pattern="[0-9]{6}" autoComplete="one-time-code" required placeholder="6 位数字" value={code} maxLength={6} enterKeyHint={needsPassword ? 'next' : 'done'} onChange={e => setCode(e.target.value.replace(/\D/g, ''))}/><button type="button" disabled={sending || cooldown > 0 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)} onClick={sendCode}>{sending ? '发送中…' : cooldown ? `${cooldown} 秒后重发` : '获取验证码'}</button></div></div>}
-          {devCode && <p className="rh-dev-code">开发环境验证码：<strong>{devCode}</strong></p>}
-          {needsPassword && <div className="rh-field">
-            <div className="rh-label-row"><label htmlFor="password">{kind === 'forgot' ? '新密码' : '密码'}</label>{kind === 'login' && <Link viewTransition to="/forgot">忘记密码？</Link>}</div>
-            <div className="rh-password"><input id="password" name="password" type={showPassword ? 'text' : 'password'} autoComplete={kind === 'login' ? 'current-password' : 'new-password'} minLength={10} maxLength={72} required enterKeyHint="done" value={password} onChange={e => setPassword(e.target.value)} placeholder={kind === 'login' ? '输入密码' : '至少 10 位'}/><button type="button" aria-label={showPassword ? '隐藏密码' : '显示密码'} aria-pressed={showPassword} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeSlash size={18}/> : <Eye size={18}/>}</button></div>
-            {kind !== 'login' && <small>至少 10 位，最多 72 字节。建议混合字母、数字和符号。</small>}
-          </div>}
-          {kind === 'login' && <label className="rh-check"><input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}/><span>30 天内保持登录</span></label>}
-          {error && <p className="rh-auth-error" role="alert">{error}</p>}
-          <button className="rh-btn rh-btn-primary rh-auth-submit" disabled={busy}>{busy ? '正在处理…' : kind === 'register' ? '创建账号' : kind === 'forgot' ? '重置密码' : '登录'}</button>
-        </form>
-        <p className="rh-auth-switch">{kind === 'register' ? <>已有账号？<Link viewTransition to="/login">登录</Link></> : kind === 'forgot' ? <>想起密码了？<Link viewTransition to="/login">返回登录</Link></> : <>还没有账号？<Link viewTransition to="/register">创建账号</Link></>}</p>
-      </main>
-    </div>
-    <Link viewTransition className="rh-auth-back" to="/">返回首页</Link>
-  </div>;
-}
+export {AuthPage} from './auth-page';
 
 export function RechargePage() {
   const config = useResource('/payments/config'), {summary, refresh} = useWorkspace(), toast = useToast();
-  const [params, setParams] = useSearchParams(), [amount, setAmount] = useState('100'), [channel, setChannel] = useState('alipay'), [busy, setBusy] = useState(false), [payment, setPayment] = useState<any>(null), [qr, setQr] = useState(''), [pollError, setPollError] = useState(''), [historyVersion, setHistoryVersion] = useState(0), [historyPage, setHistoryPage] = useState(1), [now, setNow] = useState(Date.now()), [checkingPayment, setCheckingPayment] = useState(false);
+  const [params, setParams] = useSearchParams(), [amount, setAmount] = useState(() => {const preset = Number(params.get('amount')); return Number.isInteger(preset) && preset >= 10 && preset <= 10000 ? String(preset) : '100';}), [channel, setChannel] = useState('alipay'), [busy, setBusy] = useState(false), [payment, setPayment] = useState<any>(null), [qr, setQr] = useState(''), [pollError, setPollError] = useState(''), [historyVersion, setHistoryVersion] = useState(0), [historyPage, setHistoryPage] = useState(1), [now, setNow] = useState(Date.now()), [checkingPayment, setCheckingPayment] = useState(false);
   const historyPageSize = 10;
+  // 默认渠道被后台关闭时，自动改选仍可用的渠道
+  useEffect(() => {const list = config.data?.channels; if (!list?.some((c: any) => c.key === channel && c.enabled === false)) return; const next = list.find((c: any) => c.enabled !== false); if (next) setChannel(next.key);}, [config.data, channel]);
   const history = useResource(`/me/recharges?page=${historyPage}&page_size=${historyPageSize}&v=${historyVersion}`), no = params.get('no');
   const historyPages = Math.max(1, Math.ceil((history.data?.total || 0) / historyPageSize));
   const paymentCodeExpired = payment?.status === 'pending' && paymentCodeExpiry(payment) <= now;
@@ -127,7 +55,7 @@ export function RechargePage() {
         <div className="amount-grid">{['10', '30', '50', '100', '300', '1000'].map(value => <button type="button" key={value} aria-pressed={amount === value} className={amount === value ? 'selected' : ''} onClick={() => setAmount(value)}><span>¥</span>{value}{amount === value && <Check size={15}/>}</button>)}</div>
         <label className="recharge-custom-amount">自定义金额<div className="input-icon"><span>¥</span><input type="number" required min="10" max="10000" step="0.01" value={amount} onChange={e => setAmount(e.target.value)}/></div><small>单次充值 ¥10.00 – ¥10,000.00</small></label>
         <div className="recharge-section-title recharge-channel-title"><h2>支付方式</h2></div>
-        {config.loading ? <Loading/> : config.error ? <ErrorState text={config.error} retry={config.reload}/> : <div className="payment-channels">{config.data?.channels?.map((c: any) => <button type="button" aria-pressed={channel === c.key} className={channel === c.key ? 'selected' : ''} key={c.key} disabled={c.enabled === false} title={c.enabled === false ? '该渠道暂未开放' : c.name} onClick={() => setChannel(c.key)}><span className={`channel-logo ${c.key}`}>{c.key === 'alipay' ? '支' : '微'}</span><strong>{c.name}{c.enabled === false && <small>暂未开放</small>}</strong>{channel === c.key && <Check size={16}/>}</button>)}</div>}
+        {config.loading ? <Loading/> : config.error ? <ErrorState text={config.error} retry={config.reload}/> : <div className="payment-channels">{config.data?.channels?.map((c: any) => <button type="button" aria-pressed={channel === c.key} className={channel === c.key ? 'selected' : ''} key={c.key} disabled={c.enabled === false} title={c.enabled === false ? '该支付方式暂不支持' : c.name} onClick={() => setChannel(c.key)}><span className={`channel-logo ${c.key}`}>{c.key === 'alipay' ? '支' : '微'}</span><strong>{c.name}{c.enabled === false && <small>暂不支持</small>}</strong>{channel === c.key && <Check size={16}/>}</button>)}</div>}
         <div className="recharge-submit-row"><div className="recharge-total"><span>应付金额</span><strong>{money(amountCents)}</strong></div><button className="button" disabled={busy || config.loading || !!config.error || !enabledChannel}>{busy ? '正在创建充值单…' : '前往支付'}<ArrowRight size={16}/></button></div>
       </form></section>
       <aside className="panel recharge-account-panel">
